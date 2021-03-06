@@ -17,6 +17,7 @@ class SimpleTodoPlus(QWidget):
         QWidget.__init__(self)
 
         self.todo_list_widget = QListWidget(self)
+        self.todo_list_widget.itemChanged.connect(self.onItemChanged)
 
         self.add_todo_btn = QPushButton("Add Todo", self)
         self.add_todo_btn.clicked.connect(self.add_todo_btn_clicked)
@@ -42,6 +43,7 @@ class SimpleTodoPlus(QWidget):
         item.setFlags(item.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsEditable)
         item.setCheckState(Qt.Unchecked)
         self.todo_list_widget.addItem(item)
+        self.todo_list_widget.edit(self.todo_list_widget.indexFromItem(item))
 
     def remove_todo_btn_clicked(self):
         if self.todo_list_widget.count():
@@ -49,6 +51,11 @@ class SimpleTodoPlus(QWidget):
 
     def clear_todo_btn_clicked(self):
         self.todo_list_widget.clear()
+
+    def onItemChanged(self, item):
+        font = item.font()
+        font.setStrikeOut(item.checkState() == Qt.Checked)
+        item.setFont(font)
 
 
 if __name__ == "__main__":
